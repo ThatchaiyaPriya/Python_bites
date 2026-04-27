@@ -1,0 +1,253 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\f0\fs22\lang9 #include <iostream>\par
+#include <string>\par
+#include <limits>\par
+\par
+// Define the HealthRecordNode structure\par
+struct HealthRecordNode \{\par
+    int id;\par
+    std::string name;\par
+    int age;\par
+    char gender;\par
+    float bmi;\par
+    std::string bloodpressure;\par
+    std::string healthCondition;\par
+    HealthRecordNode* next;\par
+\};\par
+\par
+// Global pointer for the start of the list\par
+HealthRecordNode* head = nullptr;\par
+\par
+// Function to get a line of input with spaces\par
+void getLine(std::string& str) \{\par
+    char ch;\par
+    str.clear();\par
+    while (std::cin.get(ch) && ch != '\\n') \{\par
+        str += ch;\par
+    \}\par
+\}\par
+\par
+// Function to get user input for a new health record\par
+void getRecordInput(int& id, std::string& name, int& age, char& gender, float& bmi,\par
+                    std::string& bloodpressure, std::string& healthCondition) \{\par
+    std::cout << "Enter Patient ID: ";\par
+    std::cin >> id;\par
+\par
+    // Clear the input buffer before reading the string\par
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\par
+\par
+    std::cout << "Enter Patient Name: ";\par
+    getLine(name);\par
+\par
+    std::cout << "Enter Age: ";\par
+    std::cin >> age;\par
+\par
+    std::cout << "Enter Gender (M/F): ";\par
+    std::cin >> gender;\par
+\par
+    std::cout << "Enter BMI: ";\par
+    std::cin >> bmi;\par
+\par
+    // Clear the input buffer\par
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\par
+\par
+    std::cout << "Enter Blood Pressure (e.g., 120/80): ";\par
+    getLine(bloodpressure);\par
+\par
+    std::cout << "Enter Health Condition: ";\par
+    getLine(healthCondition);\par
+\}\par
+\par
+// Function to insert a new health record at the end of the list\par
+void insertRecord() \{\par
+    int id, age;\par
+    char gender;\par
+    float bmi;\par
+    std::string name, bloodpressure, healthCondition;\par
+\par
+    getRecordInput(id, name, age, gender, bmi, bloodpressure, healthCondition);\par
+\par
+    HealthRecordNode* newNode = new HealthRecordNode;\par
+    newNode->id = id;\par
+    newNode->name = name;\par
+    newNode->age = age;\par
+    newNode->gender = gender;\par
+    newNode->bmi = bmi;\par
+    newNode->bloodpressure = bloodpressure;\par
+    newNode->healthCondition = healthCondition;\par
+    newNode->next = nullptr;\par
+\par
+    if (head == nullptr) \{\par
+        head = newNode;\par
+    \} else \{\par
+        HealthRecordNode* current = head;\par
+        while (current->next != nullptr) \{\par
+            current = current->next;\par
+        \}\par
+        current->next = newNode;\par
+    \}\par
+    std::cout << "\\nRecord inserted successfully." << std::endl;\par
+\}\par
+\par
+// Function to retrieve a health record by ID\par
+void retrieveRecord() \{\par
+    int id;\par
+    std::cout << "Enter Patient ID to retrieve: ";\par
+    std::cin >> id;\par
+\par
+    HealthRecordNode* current = head;\par
+    while (current != nullptr) \{\par
+        if (current->id == id) \{\par
+            std::cout << "\\n--- Retrieved Health Record (ID: " << id << ") ---" << std::endl;\par
+            std::cout << "Name: " << current->name << std::endl;\par
+            std::cout << "Age: " << current->age << std::endl;\par
+            std::cout << "Gender: " << current->gender << std::endl;\par
+            std::cout << "BMI: " << current->bmi << std::endl;\par
+            std::cout << "Blood Pressure: " << current->bloodpressure << std::endl;\par
+            std::cout << "Health Condition: " << current->healthCondition << std::endl;\par
+            std::cout << "---------------------------------------" << std::endl;\par
+            return;\par
+        \}\par
+        current = current->next;\par
+    \}\par
+    std::cout << "\\nRecord with ID " << id << " not found." << std::endl;\par
+\}\par
+\par
+// Function to delete a record by ID\par
+void deleteRecord() \{\par
+    if (head == nullptr) \{\par
+        std::cout << "List is empty. Cannot delete." << std::endl;\par
+        return;\par
+    \}\par
+\par
+    int id;\par
+    std::cout << "Enter Patient ID to delete: ";\par
+    std::cin >> id;\par
+\par
+    if (head->id == id) \{\par
+        HealthRecordNode* temp = head;\par
+        head = head->next;\par
+        delete temp;\par
+        std::cout << "Record with ID " << id << " deleted successfully." << std::endl;\par
+        return;\par
+    \}\par
+\par
+    HealthRecordNode* current = head;\par
+    HealthRecordNode* prev = nullptr;\par
+    while (current != nullptr && current->id != id) \{\par
+        prev = current;\par
+        current = current->next;\par
+    \}\par
+\par
+    if (current == nullptr) \{\par
+        std::cout << "Record with ID " << id << " not found." << std::endl;\par
+    \} else \{\par
+        prev->next = current->next;\par
+        delete current;\par
+        std::cout << "Record with ID " << id << " deleted successfully." << std::endl;\par
+    \}\par
+\}\par
+\par
+// Function to find the position of a record\par
+void findPosition() \{\par
+    int id;\par
+    std::cout << "Enter Patient ID to find position: ";\par
+    std::cin >> id;\par
+\par
+    int position = 0;\par
+    HealthRecordNode* current = head;\par
+    while (current != nullptr) \{\par
+        if (current->id == id) \{\par
+            std::cout << "Record with ID " << id << " found at position: " << position << std::endl;\par
+            return;\par
+        \}\par
+        current = current->next;\par
+        position++;\par
+    \}\par
+    std::cout << "Record with ID " << id << " not found." << std::endl;\par
+\}\par
+\par
+// Function to display the entire list\par
+void displayList() \{\par
+    if (head == nullptr) \{\par
+        std::cout << "Health Record List is empty." << std::endl;\par
+        return;\par
+    \}\par
+    std::cout << "\\n--- All Health Records ---" << std::endl;\par
+    HealthRecordNode* current = head;\par
+    while (current != nullptr) \{\par
+        std::cout << "ID: " << current->id << std::endl;\par
+        std::cout << "Name: " << current->name << std::endl;\par
+        std::cout << "Age: " << current->age << std::endl;\par
+        std::cout << "Gender: " << current->gender << std::endl;\par
+        std::cout << "BMI: " << current->bmi << std::endl;\par
+        std::cout << "Blood Pressure: " << current->bloodpressure << std::endl;\par
+        std::cout << "Health Condition: " << current->healthCondition << std::endl;\par
+        std::cout << "--------------------------" << std::endl;\par
+        current = current->next;\par
+    \}\par
+\}\par
+\par
+// Function to delete the entire list\par
+void deleteList() \{\par
+    HealthRecordNode* current = head;\par
+    while (current != nullptr) \{\par
+        HealthRecordNode* nextNode = current->next;\par
+        delete current;\par
+        current = nextNode;\par
+    \}\par
+    head = nullptr;\par
+    std::cout << "Health Record List deleted successfully." << std::endl;\par
+\}\par
+\par
+// Function to display the main menu\par
+void displayMenu() \{\par
+    std::cout << "\\n--- Health Record Management ---" << std::endl;\par
+    std::cout << "1. Insert a new record" << std::endl;\par
+    std::cout << "2. Retrieve a record" << std::endl;\par
+    std::cout << "3. Delete a record" << std::endl;\par
+    std::cout << "4. Find position of a record" << std::endl;\par
+    std::cout << "5. Display all records" << std::endl;\par
+    std::cout << "6. Delete the entire list" << std::endl;\par
+    std::cout << "7. Exit" << std::endl;\par
+    std::cout << "Enter your choice: ";\par
+\}\par
+\par
+int main() \{\par
+    int choice;\par
+    do \{\par
+        displayMenu();\par
+        std::cin >> choice;\par
+\par
+        switch (choice) \{\par
+            case 1:\par
+                insertRecord();\par
+                break;\par
+            case 2:\par
+                retrieveRecord();\par
+                break;\par
+            case 3:\par
+                deleteRecord();\par
+                break;\par
+            case 4:\par
+                findPosition();\par
+                break;\par
+            case 5:\par
+                displayList();\par
+                break;\par
+            case 6:\par
+                deleteList();\par
+                break;\par
+            case 7:\par
+                std::cout << "Exiting program. Goodbye!" << std::endl;\par
+                break;\par
+            default:\par
+                std::cout << "Invalid choice. Please try again." << std::endl;\par
+        \}\par
+    \} while (choice != 7);\par
+\par
+    return 0;\par
+\}\par
+}
+ 
